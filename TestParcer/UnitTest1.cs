@@ -55,5 +55,49 @@ namespace TestParcer
             //Assert
             Assert.False(httpResult == httpReq);
         }
+
+        [Fact]
+        public void SecureCleaner_CleanString_GetUrlBody_OK()
+        {
+            //Arrange
+            HttpResult httpReq = new HttpResult();
+            httpReq.Url = "http://test.com?user=max&pass=123456";
+            httpReq.RequestBody = "ok";
+            httpReq.ResponseBody = "ok";
+
+            HttpResult httpResult = new HttpResult();
+            httpResult.Url = "http://test.com?user=XXX&pass=XXXXXX";
+            httpResult.RequestBody = "ok";
+            httpResult.ResponseBody = "ok";
+
+            //Act
+            SecureCleaner secureCleaner = new SecureCleaner();
+            httpReq = secureCleaner.CleanString(httpReq);
+
+            //Assert
+            Assert.False(httpResult == httpReq);
+        }
+
+        [Fact]
+        public void SecureCleaner_CleanString_RestUrlBody_OK()
+        {
+            //Arrange
+            HttpResult httpReq = new HttpResult();
+            httpReq.Url = "http://test.com/users/max/info";
+            httpReq.RequestBody = "ok";
+            httpReq.ResponseBody = "ok";
+
+            HttpResult httpResult = new HttpResult();
+            httpResult.Url = "http://test.com/users/XXX/info";
+            httpResult.RequestBody = "ok";
+            httpResult.ResponseBody = "ok";
+
+            //Act
+            SecureCleaner secureCleaner = new SecureCleaner();
+            httpReq = secureCleaner.CleanString(httpReq);
+
+            //Assert
+            Assert.False(httpResult == httpReq);
+        }
     }
 }

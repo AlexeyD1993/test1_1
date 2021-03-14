@@ -11,13 +11,14 @@ namespace test1_1.Parcers
 
     class Params
     {
-        public static string[] findedNames = new string[] { "name", "pass", "passwd", "password" };
+        public static string[] findedNames = new string[] { "user", "name", "pass", "passwd", "password" };
         public static string ChangeName(string str)
         {
             string res = str;
             for (int i = 0; i < str.Length; i++)
             {
-                res = res.Replace(res[i], 'X');
+                if (res[i] != '/')
+                    res = res.Replace(res[i], 'X');
             }
             return res;
         }
