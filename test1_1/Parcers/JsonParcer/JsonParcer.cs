@@ -13,38 +13,31 @@ namespace test1_1.Parcers.JsonParcer
         { 
         }
 
-        private JToken RecourceFind(JToken host)
+        private void RecourceFind(JToken host)
         {
-            
-            List<JToken> childrens = host.Children().ToList();
-            foreach (JToken currElem in childrens)
-            {
-                if (currElem.Children().ToList().Count != 0)
-                    host.Replace(RecourceFind(currElem));
-            }
             foreach (string findedName in Params.findedNames)
             {
-                IEnumerable<JToken> tokens = host.SelectTokens(findedName);
+                List<JToken> tokens = host.SelectTokens(findedName).ToList();
                 foreach (JToken token in tokens)
                 {
                     token.Replace(Params.ChangeName(token.Value<string>()));
                 }
-                //if (host.Value<string>() == findedName)
-                //{
-                //    host.Replace(Params.ChangeName(host.Value<string>()));
-                //}
             }
-            if (host.Next != null)
-                host.Replace(RecourceFind(host.Next));
 
-            return host;
+            List<JToken> childrens = host.Children().ToList();
+            foreach (JToken currElem in childrens)
+            {
+                if (currElem.Children().ToList().Count != 0)
+                {
+                    RecourceFind(currElem);
+                }
+            }
+
+            //if (host.Next != null)
+            //{
+            //    RecourceFind(host.Next);
+            //}
         }
-
-        //Params.findedNames
-        //private JObject RecourceFind(JObject host)
-        //{   
-        //    return result;
-        //}
 
         public string TryParce(string str)
         {
@@ -52,7 +45,7 @@ namespace test1_1.Parcers.JsonParcer
             {
                 JObject data = (JObject)JsonConvert.DeserializeObject(str);
 
-                RecourceFind(data.First);
+                RecourceFind(data);
                 //data = (JObject)RecourceFind(data);
 
                 //foreach (string findedName in Params.findedNames)
