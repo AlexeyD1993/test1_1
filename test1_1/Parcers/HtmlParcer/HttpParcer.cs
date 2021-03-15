@@ -102,9 +102,16 @@ namespace test1_1.Parcers.HtmlParcer
 
         public string TryParce(string str)
         {
-            Uri currUri = new Uri(str);
-            CleanSegments(ref currUri);
-            returnCleanQuery(currUri);
+            try
+            {
+                Uri currUri = new Uri(str);
+                CleanSegments(ref currUri);
+                return CleanQuery(currUri);
+            }
+            catch (UriFormatException e)
+            {
+                return str;
+            }
             //return currUri.OriginalString;
         }
     }
