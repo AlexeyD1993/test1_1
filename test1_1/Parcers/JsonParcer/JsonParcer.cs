@@ -15,19 +15,27 @@ namespace test1_1.Parcers.JsonParcer
 
         private JToken RecourceFind(JToken host)
         {
+            
             List<JToken> childrens = host.Children().ToList();
             foreach (JToken currElem in childrens)
             {
-                host.Replace(RecourceFind(currElem));
+                if (currElem.Children().ToList().Count != 0)
+                    host.Replace(RecourceFind(currElem));
             }
             foreach (string findedName in Params.findedNames)
             {
-                if (host.Value<string>() == findedName)
+                IEnumerable<JToken> tokens = host.SelectTokens(findedName);
+                foreach (JToken token in tokens)
                 {
-                    host.Replace(Params.ChangeName(host.Value<string>()));
+                    token.Replace(Params.ChangeName(token.Value<string>()));
                 }
+                //if (host.Value<string>() == findedName)
+                //{
+                //    host.Replace(Params.ChangeName(host.Value<string>()));
+                //}
             }
-            host.Replace(RecourceFind(host.Next));
+            if (host.Next != null)
+                host.Replace(RecourceFind(host.Next));
 
             return host;
         }
