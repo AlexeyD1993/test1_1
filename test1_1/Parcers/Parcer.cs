@@ -11,7 +11,7 @@ namespace test1_1.Parcers
 
     class Params
     {
-        public static string[] findedNames = new string[] { "user", "name", "pass", "passwd", "password" };
+        public static string[] findedNames = new string[] { "user", "users", "login", "name", "pass", "passwd", "password" };
         public static string ChangeName(string str)
         {
             string res = str;
