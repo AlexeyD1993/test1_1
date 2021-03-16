@@ -131,17 +131,39 @@ namespace TestParcer
         {
             //Arrange
             HttpResult httpReq = new HttpResult();
-            httpReq.Url = "http://google.com";
+            httpReq.Url = "http://google.com/";
             httpReq.RequestBody = "<main>" +
                                         "<order><name>max</name><pass>qwe12</pass></order>" +
                                       "</main>";
             httpReq.ResponseBody = "ok";
 
             HttpResult httpResult = new HttpResult();
-            httpResult.Url = "http://google.com";
+            httpResult.Url = "http://google.com/";
             httpResult.RequestBody = "<main>" +
-                                        "<order></order><name>XXX</name><pass>XXXXX</pass></order>" +
+                                        "<order><name>XXX</name><pass>XXXXX</pass></order>" +
                                       "</main>";
+            httpResult.ResponseBody = "ok";
+
+            //Act
+            SecureCleaner secureCleaner = new SecureCleaner();
+            httpReq = secureCleaner.CleanString(httpReq);
+
+            //Assert
+            Assert.True(httpResult == httpReq);
+        }
+
+        [Fact]
+        public void SecureCleaner_CleanString_RestAndGetUrl_OK()
+        {
+            //Arrange
+            HttpResult httpReq = new HttpResult();
+            httpReq.Url = "http://test.com/users/max/info?pass=123456";
+            httpReq.RequestBody = "ok";
+            httpReq.ResponseBody = "ok";
+
+            HttpResult httpResult = new HttpResult();
+            httpResult.Url = "http://test.com/users/XXX/info?pass=XXXXXX";
+            httpResult.RequestBody = "ok";
             httpResult.ResponseBody = "ok";
 
             //Act

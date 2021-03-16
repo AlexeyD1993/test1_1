@@ -32,11 +32,6 @@ namespace test1_1.Parcers.JsonParcer
                     RecourceFind(currElem);
                 }
             }
-
-            //if (host.Next != null)
-            //{
-            //    RecourceFind(host.Next);
-            //}
         }
 
         public string TryParce(string str)
