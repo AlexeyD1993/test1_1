@@ -13,30 +13,26 @@ namespace test1_1.Parcers.JsonParcer
         { 
         }
 
-        private JToken RecourceFind(JToken host)
+        private void RecourceFind(JToken host)
         {
+            foreach (string findedName in Params.findedNames)
+            {
+                List<JToken> tokens = host.SelectTokens(findedName).ToList();
+                foreach (JToken token in tokens)
+                {
+                    token.Replace(Params.ChangeName(token.Value<string>()));
+                }
+            }
+
             List<JToken> childrens = host.Children().ToList();
             foreach (JToken currElem in childrens)
             {
-                host.Replace(RecourceFind(currElem));
-            }
-            foreach (string findedName in Params.findedNames)
-            {
-                if (host.Value<string>() == findedName)
+                if (currElem.Children().ToList().Count != 0)
                 {
-                    host.Replace(Params.ChangeName(host.Value<string>()));
+                    RecourceFind(currElem);
                 }
             }
-            host.Replace(RecourceFind(host.Next));
-
-            return host;
         }
-
-        //Params.findedNames
-        //private JObject RecourceFind(JObject host)
-        //{   
-        //    return result;
-        //}
 
         public string TryParce(string str)
         {
@@ -44,17 +40,8 @@ namespace test1_1.Parcers.JsonParcer
             {
                 JObject data = (JObject)JsonConvert.DeserializeObject(str);
 
-                RecourceFind(data.First);
-                //data = (JObject)RecourceFind(data);
-
-                //foreach (string findedName in Params.findedNames)
-                //{
-                //    //IEnumerable<JToken> jTokens = data.SelectTokens(findedName);
-                //    //foreach (JToken jToken in jTokens)
-                //    //{
-                //    //    jToken.Replace(Params.ChangeName(jToken.Value<string>()));
-                //    //}
-                //}
+                RecourceFind(data);
+                
                 return JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
             }
             catch (JsonException ex)
