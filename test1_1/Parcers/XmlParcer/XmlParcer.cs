@@ -43,16 +43,6 @@ namespace test1_1.Parcers.XmlParcer
                 XElement xElem = XElement.Parse(str);
 
                 RecourceParce(xElem);
-
-                //foreach (string findedName in Params.findedNames)
-                //{
-                //    List<XElement> elements = xElem.Elements(findedName).ToList();
-                //    foreach (XElement xElement in elements)
-                //    {
-                //        xElement.Value = Params.ChangeName(xElement.Value);
-                //    }
-                //}
-
                 return xElem.ToString();
 
             }
@@ -60,15 +50,7 @@ namespace test1_1.Parcers.XmlParcer
             {
                 return str;
             }
-            //System.IO.TextWriter textReader = System.IO.TextReader
-            //XmlReader xmlReader = XmlReader.Create(str);
-            //System.Xml.Serialization.XmlSerializer reader =
-            //    new System.Xml.Serialization.XmlSerializer(typeof(XmlNode));
-
-            //XmlNode xmlNode = (XmlNode)reader.Deserialize(xmlReader);
-            //xmlReader.Close();
-
-            //XmlWriter xmlWriter = XmlWriter.Create()
+            
         }
     }
 }

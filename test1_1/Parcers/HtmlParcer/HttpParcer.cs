@@ -8,76 +8,38 @@ namespace test1_1.Parcers.HtmlParcer
 {
     class HttpParcer : IParcer
     {
-        private string CleanSegments(ref Uri uri)
+        private void CleanSegments(UriBuilder uri)
         {
-            string result = "";
-            for (int i = 0; i < uri.Segments.Length; i++)
+            string[] segments = uri.Path.Split('/');
+
+            for (int i = 0; i < segments.Length; i++)
             {
-                bool isFinded = false;
+                if (String.IsNullOrEmpty(segments[i]))
+                    continue;
                 foreach (string param in Params.findedNames)
                 {
-                    if (uri.Segments[i].Trim('/') == param)
+                    if (segments[i].ToUpper() == param.ToUpper())
                     {
-                        if (i < uri.Segments.Length - 1)
-                        {
-                            isFinded = true;
-                            result += uri.Segments[i] + Params.ChangeName(uri.Segments[i + 1]);
-                            i++;
-                        }
+                        if (i < segments.Length - 1)
+                            segments[i + 1] = Params.ChangeName(segments[i + 1]);
                     }
                 }
-                if (!isFinded)
-                    result += uri.Segments[i];
             }
-            return result;
+            uri.Path = "";
+            foreach (string segment in segments)
+            {
+                if (!String.IsNullOrEmpty(segment))
+                    uri.Path += segment + '/';
+            }
+            uri.Path = uri.Path.Remove(uri.Path.Length - 1);
         }
 
-        //private List<QueryClass> ParceQuery(string query)
-        //{
-        //    List<QueryClass> result = new List<QueryClass>();
-        //    char[] deliverChars = new char[] { '?', '&', '/', '=' };
-        //    string tmp = "";
-        //    int startPos = 0;
-        //    bool isFind = false;
-        //    QueryClass queryClass;
-        //    for (int i = 0; i < query.Length; i++)
-        //    {
-        //        isFind = false;
-        //        foreach (char deliverChar in deliverChars)
-        //        {
-        //            if (deliverChar == query[i])
-        //            {
-        //                isFind = true;
-        //                startPos++;
-        //                if (!String.IsNullOrEmpty(tmp))
-        //                {
-        //                    queryClass = new QueryClass();
-        //                    queryClass.StartPos = startPos;
-        //                    queryClass.EndPos = i - 1;
-        //                    queryClass.Name = tmp;
-        //                    result.Add(queryClass);
-        //                    startPos = i;
-        //                }
-        //                tmp = "";
-        //                break;
-        //            }
-        //        }
-        //        if (!isFind)
-        //            tmp += query[i];
-        //    }
-
-        //    queryClass = new QueryClass();
-        //    queryClass.StartPos = startPos;
-        //    queryClass.EndPos = query.Length;
-        //    queryClass.Name = tmp;
-        //    result.Add(queryClass);
-        //    return result;
-        //}
-
-        private string CleanQuery(Uri uri)
+        private void CleanQuery(UriBuilder uri)
         {
-            string result = "";
             string[] queries = uri.Query.Split('&');
+            if (queries[0] == "")
+                return;
+            uri.Query = "";
             foreach (string query in queries)
             {
                 string[] paramStrings = query.Split('=');
@@ -86,51 +48,30 @@ namespace test1_1.Parcers.HtmlParcer
                     if (paramStrings[0].Trim('?') == paramName)
                         paramStrings[1] = Params.ChangeName(paramStrings[1]);
                 }
-                result += paramStrings[0] + "=" + paramStrings[1] + "&";
+                uri.Query += paramStrings[0] + "=" + paramStrings[1] + "&";
             }
-            result = result.Remove(result.Length - 1);
-            //List<QueryClass> segments = ParceQuery(uri.Query);
-            //int lastPosSegment = 0;
-            //for (int i = 0; i < segments.Count; i++)
-            //{
-            //    foreach (string findName in Params.findedNames)
-            //    {
-            //        if (segments[i].Name == findName)
-            //        {
-            //            if (i < segments.Count - 1)
-            //            {
-            //                result += uri.Query.Substring(lastPosSegment, segments[i + 1].StartPos - lastPosSegment);
-            //                for (int j = segments[i + 1].StartPos; j < segments[i + 1].EndPos + 1; j++)
-            //                {
-            //                    result += 'X';
-            //                }
-            //                lastPosSegment = segments[i + 1].EndPos + 1;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-            return result;
-            //currUri.Query
+            uri.Query = uri.Query.Remove(uri.Query.Length - 1);
         }
 
         public string TryParce(string str)
         {
             try
             {
-                Uri currUri = new Uri(str);
-                string result = currUri.Scheme + "://";
-                result += currUri.Host;
+                Uri currUri = new Uri(str); // для попытки распарсить строку
                 
-                result += CleanSegments(ref currUri);
-                result += CleanQuery(currUri);
-                return result;
+                UriBuilder uri = new UriBuilder(str);
+                CleanSegments(uri);
+                CleanQuery(uri);
+                if (uri.Path.Length == 1)
+                    return uri.Uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port & ~UriComponents.Path,
+                               UriFormat.UriEscaped);
+                
+                return uri.Uri.ToString();
             }
             catch (UriFormatException e)
             {
                 return str;
             }
-            //return currUri.OriginalString;
         }
     }
 }
