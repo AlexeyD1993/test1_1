@@ -41,16 +41,7 @@ namespace test1_1.Parcers.JsonParcer
                 JObject data = (JObject)JsonConvert.DeserializeObject(str);
 
                 RecourceFind(data);
-                //data = (JObject)RecourceFind(data);
-
-                //foreach (string findedName in Params.findedNames)
-                //{
-                //    //IEnumerable<JToken> jTokens = data.SelectTokens(findedName);
-                //    //foreach (JToken jToken in jTokens)
-                //    //{
-                //    //    jToken.Replace(Params.ChangeName(jToken.Value<string>()));
-                //    //}
-                //}
+                
                 return JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
             }
             catch (JsonException ex)
