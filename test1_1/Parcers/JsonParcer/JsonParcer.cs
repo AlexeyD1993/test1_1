@@ -17,7 +17,7 @@ namespace test1_1.Parcers.JsonParcer
         {
             foreach (string findedName in Params.findedNames)
             {
-                List<JToken> tokens = host.SelectTokens(findedName).ToList();
+                List<JToken> tokens = host.SelectTokens(findedName.ToUpper()).ToList();
                 foreach (JToken token in tokens)
                 {
                     token.Replace(Params.ChangeName(token.Value<string>()));
@@ -38,7 +38,7 @@ namespace test1_1.Parcers.JsonParcer
         {
             try
             {
-                JObject data = (JObject)JsonConvert.DeserializeObject(str);
+                JObject data = (JObject)JsonConvert.DeserializeObject(str.ToUpper());
 
                 RecourceFind(data);
                 

@@ -14,7 +14,7 @@ namespace test1_1.Parcers.XmlParcer
             XElement currElement = (XElement)xNode;
             foreach (string findedName in Params.findedNames)
             {
-                List<XElement> elements = currElement.Elements(findedName).ToList();
+                List<XElement> elements = currElement.Elements(findedName.ToUpper()).ToList();
                 foreach (XElement xElem in elements)
                 {
                     xElem.Value = Params.ChangeName(xElem.Value);
@@ -40,7 +40,7 @@ namespace test1_1.Parcers.XmlParcer
         {
             try
             {
-                XElement xElem = XElement.Parse(str);
+                XElement xElem = XElement.Parse(str.ToUpper());
 
                 RecourceParce(xElem);
                 return xElem.ToString();

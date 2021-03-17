@@ -25,13 +25,8 @@ namespace test1_1
                 result.Url = instance.TryParce(httpResult.Url);
                 //если имеем полученный результат - то возвращаем его
                 if (result.Url != httpResult.Url)
-                {
                     break;
-                }
             }
-            //Если результатов обработки нет - то вываливаемся по exception
-            //if (result.Url == "")
-            //    throw new ParcerException();
 
             //Блок обезличивания HttpRequest
             foreach (var instance in instances)
@@ -40,13 +35,8 @@ namespace test1_1
                 result.RequestBody = instance.TryParce(httpResult.RequestBody);
                 //если имеем полученный результат - то возвращаем его
                 if (result.RequestBody != httpResult.RequestBody)
-                {
                     break;
-                }
             }
-            //Если результатов обработки нет - то вываливаемся по exception
-            //if (result.RequestBody == "")
-            //    throw new ParcerException();
 
             //Блок обезличивания HttpRequest
             foreach (var instance in instances)
@@ -55,13 +45,8 @@ namespace test1_1
                 result.ResponseBody = instance.TryParce(httpResult.ResponseBody);
                 //если имеем полученный результат - то возвращаем его
                 if (result.ResponseBody != httpResult.ResponseBody)
-                {
                     break;
-                }
             }
-            //Если результатов обработки нет - то вываливаемся по exception
-            //if (result.ResponseBody == "")
-            //    throw new ParcerException();
 
             return result;
         }
