@@ -41,10 +41,14 @@ namespace test1_1.Parcers.JsonParcer
                 JObject data = (JObject)JsonConvert.DeserializeObject(str);
 
                 RecourceFind(data);
-                
-                return JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
+
+                return JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.None);
             }
             catch (JsonException ex)
+            {
+                return str;
+            }
+            catch (InvalidCastException ex)
             {
                 return str;
             }

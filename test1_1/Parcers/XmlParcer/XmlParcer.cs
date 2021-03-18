@@ -43,7 +43,7 @@ namespace test1_1.Parcers.XmlParcer
                 XElement xElem = XElement.Parse(str);
 
                 RecourceParce(xElem);
-                return xElem.ToString();
+                return xElem.ToString(SaveOptions.DisableFormatting);
 
             }
             catch (XmlException e)

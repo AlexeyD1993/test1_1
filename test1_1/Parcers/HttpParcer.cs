@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Security.Policy;
 using System.Text;
+using System.Linq;
+using System.Reflection;
 
-namespace test1_1.Parcers.HtmlParcer
+namespace test1_1.Parcers
 {
-    class HttpParcer : IParcer
+    class HttpParcer
     {
         private void CleanSegments(UriBuilder uri)
         {
@@ -16,6 +18,21 @@ namespace test1_1.Parcers.HtmlParcer
             {
                 if (String.IsNullOrEmpty(segments[i]))
                     continue;
+
+                //Ищем все инстансы, которые унаследованы от интерфейса Parcer
+                var instances = from t in Assembly.GetExecutingAssembly().GetTypes()
+                            where t.GetInterfaces().Contains(typeof(IParcer))
+                                     && t.GetConstructor(Type.EmptyTypes) != null
+                            select Activator.CreateInstance(t) as IParcer;
+
+                //Парсим REST-запрос на наличие строк формата JSON или XML.
+                foreach (var instance in instances)
+                {
+                    //пробуем распарсить полученный инстанс
+                    segments[i] = instance.TryParce(System.Web.HttpUtility.UrlDecode((segments[i])));
+                    
+                }
+
                 foreach (string param in Params.findedNames)
                 {
                     if (segments[i].ToUpper() == param.ToUpper())
@@ -43,6 +60,21 @@ namespace test1_1.Parcers.HtmlParcer
             foreach (string query in queries)
             {
                 string[] paramStrings = query.Split('=');
+
+                //Ищем все инстансы, которые унаследованы от интерфейса Parcer
+                var instances = from t in Assembly.GetExecutingAssembly().GetTypes()
+                                where t.GetInterfaces().Contains(typeof(IParcer))
+                                         && t.GetConstructor(Type.EmptyTypes) != null
+                                select Activator.CreateInstance(t) as IParcer;
+
+                //Пытаемся распарсить строку с get-запросом на наличие JSON или XML значений.
+                foreach (var instance in instances)
+                {
+                    //пробуем распарсить полученный инстанс
+                    paramStrings[1] = instance.TryParce(System.Web.HttpUtility.UrlDecode(paramStrings[1]));
+                    
+                }
+
                 foreach (string paramName in Params.findedNames)
                 {
                     if (paramStrings[0].Trim('?') == paramName)
@@ -57,8 +89,8 @@ namespace test1_1.Parcers.HtmlParcer
         {
             try
             {
-                Uri currUri = new Uri(str); // для попытки распарсить строку
-                
+                Uri uriTest = new Uri(str);
+
                 UriBuilder uri = new UriBuilder(str);
                 CleanSegments(uri);
                 CleanQuery(uri);
